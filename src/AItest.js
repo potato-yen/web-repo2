@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 export default function AItest({
-  defaultModel = 'gpt-5',
-  starter = '嗨！幫我生成白酒蛤蠣義大利麵的詳細食譜',
+  defaultModel = 'gpt-5', // 雖然寫 gpt-5，實際 API 呼叫時請確保有權限，或改回 gpt-4o
+  starter = '嗨！我想聊聊關於資料科學的職涯規劃...',
 }) {
   const [model, setModel] = useState(defaultModel);
   const [history, setHistory] = useState([]);
@@ -13,21 +13,6 @@ export default function AItest({
   const [error, setError] = useState('');
   const listRef = useRef(null);
 
-  // 🌗 監聽主題切換
-  const [theme, setTheme] = useState(
-    document.documentElement.getAttribute('data-theme') || 'light'
-  );
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setTheme(document.documentElement.getAttribute('data-theme') || 'light');
-    });
-    observer.observe(document.documentElement, { attributes: true });
-    return () => observer.disconnect();
-  }, []);
-
-  const isDark = theme === 'dark';
-
   // 載入使用者在本機儲存的 API Key
   useEffect(() => {
     const saved = localStorage.getItem('openai_api_key');
@@ -36,7 +21,7 @@ export default function AItest({
 
   // 歡迎訊息 + starter
   useEffect(() => {
-    setHistory([{ role: 'model', parts: [{ text: '👋 這裡是 OpenAI Chat，小幫手在這！' }] }]);
+    setHistory([{ role: 'model', parts: [{ text: '你好！我是你的 AI 助理。\n有什麼我可以幫你分析或解答的嗎？' }] }]);
     if (starter) setInput(starter);
   }, [starter]);
 
@@ -106,192 +91,240 @@ export default function AItest({
 
   function renderMarkdownLike(text) {
     return text.split(/\n/).map((ln, i) => (
-      <div key={i} style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+      <div key={i} style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', marginBottom: '4px' }}>
         {ln}
       </div>
     ));
   }
 
-  // 🧱 動態樣式：根據 isDark 切換色彩
+  // ✨ 全新設計：莫蘭迪風格樣式 (Morandi Style)
   const styles = {
-    wrap: { display: 'grid', placeItems: 'start', padding: 16 },
+    wrap: {
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      fontFamily: 'var(--font-sans)', // 跟隨主站字體
+    },
     card: {
       width: 'min(900px, 100%)',
-      background: isDark ? '#1e293b' : '#fff',
-      color: isDark ? '#f8fafc' : '#111827',
-      border: isDark ? '1px solid #334155' : '1px solid #e5e7eb',
-      borderRadius: 16,
-      overflow: 'hidden',
+      height: 'min(700px, 80vh)', // 限制高度，避免過長
+      background: 'rgba(255, 255, 255, 0.65)', // 玻璃擬態背景
+      backdropFilter: 'blur(12px)',
+      WebkitBackdropFilter: 'blur(12px)',
+      border: '1px solid rgba(255, 255, 255, 0.4)',
+      borderRadius: '16px',
+      boxShadow: '0 10px 30px rgba(0, 0, 0, 0.05)',
       display: 'flex',
       flexDirection: 'column',
-      height: '90vh',
+      overflow: 'hidden',
     },
     header: {
-      padding: '10px 12px',
+      padding: '16px 24px',
+      borderBottom: '1px solid rgba(0,0,0,0.06)',
+      background: 'rgba(255,255,255,0.3)',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    headerTitle: {
+      fontFamily: 'var(--font-serif)',
+      fontSize: '1.1rem',
       fontWeight: 700,
-      borderBottom: isDark ? '1px solid #334155' : '1px solid #e5e7eb',
-      background: isDark ? '#0f172a' : '#f9fafb',
+      color: 'var(--col-navy)',
     },
     controls: {
-      display: 'grid',
-      gap: 12,
-      gridTemplateColumns: '1fr 1fr',
-      padding: 12,
+      padding: '12px 24px',
+      background: 'rgba(255,255,255,0.2)',
+      fontSize: '0.85rem',
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: '16px',
+      alignItems: 'center',
+      borderBottom: '1px solid rgba(0,0,0,0.03)',
     },
-    label: { display: 'grid', gap: 6, fontSize: 13, fontWeight: 600 },
-    input: {
-      padding: '10px 12px',
-      borderRadius: 10,
-      border: isDark ? '1px solid #475569' : '1px solid #e5e7eb',
-      background: isDark ? '#0f172a' : '#fff',
-      color: isDark ? '#f8fafc' : '#111827',
+    inputGroup: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        flex: 1,
+    },
+    inputField: {
+      padding: '6px 10px',
+      borderRadius: '6px',
+      border: '1px solid rgba(0,0,0,0.1)',
+      background: 'rgba(255,255,255,0.5)',
+      color: 'var(--text-main)',
+      outline: 'none',
+      fontSize: '0.85rem',
+      width: '100%',
+      transition: 'all 0.2s',
     },
     messages: {
-      padding: 12,
-      display: 'grid',
-      gap: 10,
-      maxHeight: 420,
-      overflow: 'auto',
+      padding: '24px',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '16px',
+      overflowY: 'auto',
       flex: 1,
+      scrollBehavior: 'smooth',
     },
+    // 氣泡通用樣式
     msg: {
-      borderRadius: 12,
-      padding: 10,
-      border: isDark ? '1px solid #334155' : '1px solid #e5e7eb',
+      maxWidth: '85%',
+      padding: '14px 18px',
+      borderRadius: '12px',
+      lineHeight: 1.6,
+      fontSize: '0.95rem',
+      position: 'relative',
+      boxShadow: '0 2px 5px rgba(0,0,0,0.03)',
     },
+    // 使用者氣泡：深藏青色 (Navy) + 白字
     user: {
-      background: isDark ? '#334155' : '#eef2ff',
-      borderColor: isDark ? '#475569' : '#c7d2fe',
+      alignSelf: 'flex-end',
+      background: 'var(--col-navy)', 
+      color: '#fff',
+      borderBottomRightRadius: '2px',
     },
+    // AI 氣泡：奶油白 (Cream) + 深灰字
     assistant: {
-      background: isDark ? '#1e293b' : '#f1f5f9',
-      borderColor: isDark ? '#334155' : '#e2e8f0',
+      alignSelf: 'flex-start',
+      background: '#fff', // 或 var(--col-cream)
+      color: '#333',
+      border: '1px solid rgba(0,0,0,0.05)',
+      borderBottomLeftRadius: '2px',
     },
-    msgRole: { fontSize: 12, fontWeight: 700, opacity: 0.7, marginBottom: 6 },
-    msgBody: { fontSize: 14, lineHeight: 1.5, color: isDark ? '#f1f5f9' : '#111827' },
-    error: { color: '#b91c1c', padding: '4px 12px' },
+    roleLabel: {
+      fontSize: '0.7rem',
+      marginBottom: '4px',
+      opacity: 0.7,
+      fontWeight: 600,
+      textTransform: 'uppercase',
+      letterSpacing: '0.05em',
+    },
     composer: {
-      position: 'sticky',
-      bottom: 0,
-      background: isDark ? '#0f172a' : '#fff',
-      padding: 12,
-      display: 'grid',
-      gridTemplateColumns: '1fr auto',
-      gap: 8,
-      borderTop: isDark ? '1px solid #334155' : '1px solid #e5e7eb',
+      padding: '16px 24px',
+      background: 'rgba(255,255,255,0.6)',
+      borderTop: '1px solid rgba(0,0,0,0.06)',
+      display: 'flex',
+      gap: '12px',
     },
-    textInput: {
-      padding: '10px 12px',
-      borderRadius: 10,
-      border: isDark ? '1px solid #475569' : '1px solid #e5e7eb',
-      background: isDark ? '#0f172a' : '#fff',
-      color: isDark ? '#f8fafc' : '#111827',
+    chatInput: {
+      flex: 1,
+      padding: '12px 16px',
+      borderRadius: '30px', // 圓潤輸入框
+      border: '1px solid rgba(0,0,0,0.1)',
+      background: '#fff',
+      outline: 'none',
+      fontSize: '0.95rem',
+      color: '#333',
+      boxShadow: '0 2px 5px rgba(0,0,0,0.02)',
     },
     sendBtn: {
-      padding: '10px 14px',
-      borderRadius: 999,
-      border: '1px solid #111827',
-      background: isDark ? '#f8fafc' : '#111827',
-      color: isDark ? '#0f172a' : '#fff',
-      fontSize: 14,
+      padding: '10px 24px',
+      borderRadius: '30px',
+      border: 'none',
+      background: 'var(--col-navy)',
+      color: '#fff',
+      fontWeight: 600,
       cursor: 'pointer',
+      transition: 'transform 0.2s',
+      boxShadow: '0 4px 10px rgba(44, 62, 80, 0.2)',
     },
-    suggestion: {
-      padding: '6px 10px',
-      borderRadius: 999,
-      border: isDark ? '1px solid #334155' : '1px solid #e5e7eb',
-      background: isDark ? '#1e293b' : '#f9fafb',
-      color: isDark ? '#e2e8f0' : '#111827',
-      cursor: 'pointer',
-      fontSize: 12,
-    },
+    error: {
+        padding: '8px 24px',
+        background: 'rgba(220, 53, 69, 0.1)',
+        color: '#b91c1c',
+        fontSize: '0.85rem',
+        textAlign: 'center',
+    }
   };
 
   return (
     <div style={styles.wrap}>
       <div style={styles.card}>
-        <div style={styles.header}>OpenAI Chat（前端直連，不經 proxy）</div>
-
-        {/* Controls */}
-        <div style={styles.controls}>
-          <label style={styles.label}>
-            <span>Model</span>
-            <input
-              value={model}
-              onChange={e => setModel(e.target.value)}
-              placeholder="例如 gpt-5、gpt-4o-mini"
-              style={styles.input}
-            />
-          </label>
-
-          <label style={styles.label}>
-            <span>OpenAI API Key</span>
-            <input
-              type="password"
-              value={apiKey}
-              onChange={e => {
-                const v = e.target.value;
-                setApiKey(v);
-                if (rememberKey) localStorage.setItem('openai_api_key', v);
-              }}
-              placeholder="貼上你的 API Key（只在本機瀏覽器儲存）"
-              style={styles.input}
-            />
-            <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6, fontSize: 12 }}>
-              <input
-                type="checkbox"
-                checked={rememberKey}
-                onChange={e => {
-                  setRememberKey(e.target.checked);
-                  if (!e.target.checked) localStorage.removeItem('openai_api_key');
-                  else if (apiKey) localStorage.setItem('openai_api_key', apiKey);
-                }}
-              />
-              <span>記住在本機（localStorage）</span>
-            </label>
-          </label>
+        
+        {/* Header */}
+        <div style={styles.header}>
+            <span style={styles.headerTitle}>AI Playground</span>
+            <div style={{fontSize: '0.75rem', opacity: 0.6}}>Powered by GPT</div>
         </div>
 
-        {/* Messages */}
+        {/* Config Panel */}
+        <div style={styles.controls}>
+            <div style={styles.inputGroup}>
+                <span style={{opacity: 0.6}}>API Key:</span>
+                <input
+                    type="password"
+                    value={apiKey}
+                    onChange={(e) => {
+                        const v = e.target.value;
+                        setApiKey(v);
+                        if (rememberKey) localStorage.setItem('openai_api_key', v);
+                    }}
+                    placeholder="sk-..."
+                    style={styles.inputField}
+                />
+            </div>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', opacity: 0.7 }}>
+                <input
+                    type="checkbox"
+                    checked={rememberKey}
+                    onChange={e => {
+                        setRememberKey(e.target.checked);
+                        if (!e.target.checked) localStorage.removeItem('openai_api_key');
+                        else if (apiKey) localStorage.setItem('openai_api_key', apiKey);
+                    }}
+                />
+                <span>Remember Key</span>
+            </label>
+        </div>
+
+        {/* Chat Area */}
         <div ref={listRef} style={styles.messages}>
           {history.map((m, idx) => (
-            <div key={idx} style={{ ...styles.msg, ...(m.role === 'user' ? styles.user : styles.assistant) }}>
-              <div style={styles.msgRole}>{m.role === 'user' ? 'You' : 'OpenAI'}</div>
-              <div style={styles.msgBody}>{renderMarkdownLike(m.parts.map(p => p.text).join('\n'))}</div>
+            <div 
+                key={idx} 
+                style={{ 
+                    ...styles.msg, 
+                    ...(m.role === 'user' ? styles.user : styles.assistant) 
+                }}
+            >
+              <div style={styles.roleLabel}>{m.role === 'user' ? 'You' : 'AI Assistant'}</div>
+              <div>{renderMarkdownLike(m.parts.map(p => p.text).join('\n'))}</div>
             </div>
           ))}
           {loading && (
-            <div style={{ ...styles.msg, ...styles.assistant }}>
-              <div style={styles.msgRole}>OpenAI</div>
-              <div style={styles.msgBody}>思考中…</div>
+            <div style={{...styles.msg, ...styles.assistant, fontStyle: 'italic', opacity: 0.7}}>
+              Thinking...
             </div>
           )}
         </div>
 
-        {/* Error */}
-        {error && <div style={styles.error}>⚠ {error}</div>}
+        {error && <div style={styles.error}>{error}</div>}
 
-        {/* Composer */}
+        {/* Input Area */}
         <form onSubmit={e => { e.preventDefault(); sendMessage(); }} style={styles.composer}>
           <input
-            placeholder="輸入訊息，按 Enter 送出"
+            placeholder="Type a message..."
             value={input}
             onChange={e => setInput(e.target.value)}
-            style={styles.textInput}
+            style={styles.chatInput}
           />
-          <button type="submit" disabled={loading || !input.trim() || !apiKey} style={styles.sendBtn}>
-            送出
+          <button 
+            type="submit" 
+            disabled={loading || !input.trim()} 
+            style={{
+                ...styles.sendBtn, 
+                opacity: (loading || !input.trim()) ? 0.6 : 1,
+                cursor: (loading || !input.trim()) ? 'not-allowed' : 'pointer'
+            }}
+          >
+            Send
           </button>
         </form>
 
-        {/* Quick examples */}
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 8 }}>
-          {['光速是怎麼定義的？', '幫我把這段英文翻成法文：Hello my friend!', '寫一個給初學者學習C++的學習計劃'].map(q => (
-            <button key={q} type="button" style={styles.suggestion} onClick={() => sendMessage(q)}>
-              {q}
-            </button>
-          ))}
-        </div>
       </div>
     </div>
   );
