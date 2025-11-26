@@ -20,7 +20,9 @@
             <div class="nav-links">
                 <a href="#about" data-target="about">About</a>
                 <a href="#projects" data-target="projects">Projects</a>
-                <a href="#resume" data-target="resume">Resume</a> <a href="#ai-chat" data-target="ai-chat">AI Chat</a> <a href="#contact" data-target="contact">Contact</a>
+                <a href="#activity" data-target="activity">Activity</a> <a href="#resume" data-target="resume">Resume</a>
+                <a href="#ai-chat" data-target="ai-chat">AI Chat</a>
+                <a href="#contact" data-target="contact">Contact</a>
             </div>
         </div>
     </nav>
@@ -39,6 +41,13 @@
                             你好，我是<strong>顏端廷</strong>。<br>
                             熱衷於在數據的海洋中，尋找邏輯與美感的平衡。
                         </p>
+                        
+                        <div class="hero-quote-box reveal-delay-2">
+                            <span class="quote-label">Daily Quote</span>
+                            <blockquote id="quote-text">Loading wisdom...</blockquote>
+                            <cite id="quote-author">-</cite>
+                        </div>
+
                         <div class="scroll-indicator">
                             <span>Scroll to Explore</span>
                             <div class="arrow-down"></div>
@@ -81,7 +90,7 @@
                             <div class="stat-container">
                                 <div class="stat-box">
                                     <div class="stat-numbers">
-                                        <span class="counter" data-target="79">0</span>
+                                        <span class="counter" id="leetcode-easy" data-target="0">0</span>
                                         <span class="stat-slash">/</span>
                                         <span class="stat-total">200</span>
                                     </div>
@@ -89,7 +98,7 @@
                                 </div>
                                 <div class="stat-box">
                                     <div class="stat-numbers">
-                                        <span class="counter" data-target="11">0</span>
+                                        <span class="counter" id="leetcode-medium" data-target="0">0</span>
                                         <span class="stat-slash">/</span>
                                         <span class="stat-total">100</span>
                                     </div>
@@ -136,6 +145,9 @@
                                     支援 Markdown (KaTeX) 與 LaTeX (Tectonic) 雲端編譯。
                                     整合 Supabase 進行使用者驗證與文檔雲端同步。
                                 </p>
+                                
+                                <div class="repo-stats" id="gh-editor-stats" style="margin: 10px 0; font-size: 0.85rem; color: #f0e68c;"></div>
+
                                 <div class="project-meta" style="color: rgba(255,255,255,0.6);">
                                     <span>React</span> • <span>Node.js</span> • <span>Supabase</span> • <span>Docker</span>
                                 </div>
@@ -149,18 +161,42 @@
                         <div class="bento-item item-web reveal bg-lavender">
                             <span class="bento-tag">Automation</span>
                             <h3>Daily News Digest</h3>
-                            <p>Python 爬蟲與 OpenAI API 整合的自動化新聞摘要系統。每日自動抓取並寄送新聞懶人包。</p>
+                            <p>Python 爬蟲與 OpenAI API 整合的自動化新聞摘要系統。</p>
+                            <div class="repo-stats" id="gh-news-stats" style="margin: 10px 0; font-size: 0.8rem; font-weight: 600; color: var(--col-navy);"></div>
                             <a href="https://github.com/potato-yen/Daily-News-Email-Digest" target="_blank" class="link-arrow">View on GitHub ↗</a>
                         </div>
 
                         <div class="bento-item item-course reveal bg-cream">
                             <span class="bento-tag">Web Development</span>
                             <h3>Personal Portfolio</h3>
-                            <p>
-                                使用原生 HTML/CSS/JS 與 Vibe Coding 打造的個人網站（即本站）。
-                                採用莫蘭迪色系與響應式 Bento Grid 設計。
-                            </p>
+                            <p>使用原生 HTML/CSS/JS 與 Vibe Coding 打造的個人網站。</p>
+                            <div class="repo-stats" id="gh-portfolio-stats" style="margin: 10px 0; font-size: 0.8rem; font-weight: 600; color: var(--col-navy);"></div>
                             <a href="https://github.com/potato-yen/web-repo" target="_blank" class="link-arrow">Source Code ↗</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="activity" class="card next">
+            <div class="card-inner">
+                <div class="container section-container">
+                    <div class="section-header reveal">
+                        <h2 class="section-title">Latest Activity</h2>
+                        <div class="section-line"></div>
+                    </div>
+                    
+                    <div class="bento-grid">
+                        <div class="bento-item reveal bg-grey-blue" style="grid-column: span 12;">
+                            <span class="bento-tag">Coding Log</span>
+                            <h3>GitHub Events</h3>
+                            <p style="margin-bottom: 20px;">Recent pushes, commits, and open source contributions.</p>
+                            
+                            <ul id="gh-activity-list" class="simple-list" style="font-size: 1rem;">
+                                <li>Loading GitHub activity...</li>
+                            </ul>
+                            
+                            <a href="https://github.com/potato-yen" target="_blank" class="link-arrow" style="margin-top: 20px;">Visit GitHub Profile ↗</a>
                         </div>
                     </div>
                 </div>
@@ -202,11 +238,9 @@
                         <h2 class="section-title">AI Playground</h2>
                         <div class="section-line"></div>
                     </div>
-                    
                     <div class="reveal" style="min-height: 600px; display: flex; justify-content: center;">
                         <div id="root" style="width: 100%;"></div>
                     </div>
-                    
                     <p style="text-align: center; margin-top: 20px; opacity: 0.7;">
                         Powered by OpenAI API & React.
                     </p>
